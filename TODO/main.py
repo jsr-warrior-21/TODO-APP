@@ -1,7 +1,9 @@
 from fastapi import FastAPI
-from routers import user,auth,task
+from .routers import auth, task
+from .routers import user
 from .database import engine
 from . import models
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(
     
@@ -9,6 +11,14 @@ app = FastAPI(
     description="A production-ready To-Do app backend"
 
 )
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # sab origins allow
+    allow_credentials=True,
+    allow_methods=["*"],  # GET, POST, PUT, DELETE etc.
+    allow_headers=["*"],  # sab headers allow
+)
+
 #  Create tables (async way)
 async def init_db():
     async with engine.begin() as conn:
@@ -30,3 +40,5 @@ app.include_router(task.router)
 @app.get("/",tags=['Home'])
 def root():
     return {"message": "Welcome to the To-Do API! Go to /docs to test the endpoints."}
+
+

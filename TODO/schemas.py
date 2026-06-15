@@ -9,7 +9,22 @@ class TaskBase(BaseModel):
     # Field se hum strict validation aur example data de sakte hain (Swagger UI ke liye)
     title: str = Field(..., max_length=255,min_length=1, examples=["Complete Maths assignment"])
     description: Optional[str] = Field(None, max_length=500, examples=["Finish Calculus portion before Monday"])
-
+    is_important: Optional[bool] = False
+    due_date: Optional[datetime] = None
+    @field_validator("due_date", mode="before")
+    @classmethod
+    def parse_due_date(cls, value):
+        if isinstance(value, str):
+            try:
+                # Try full datetime
+                return datetime.fromisoformat(value)
+            except:
+                try:
+                    # Try only date
+                    return datetime.strptime(value, "%Y-%m-%d")
+                except:
+                    raise ValueError("Invalid date format. Use YYYY-MM-DD or YYYY-MM-DD HH:MM")
+        return value
 class CreateTask(TaskBase):
     # User se task banate waqt sirf title aur description lenge
     pass
