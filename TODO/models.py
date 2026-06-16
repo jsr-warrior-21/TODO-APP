@@ -22,7 +22,8 @@ class Task(Base):
     completed = Column(Boolean, default=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     user_id = Column(Integer,ForeignKey('users.id'))
-    
+    is_important = Column(Boolean, default=False)
+    due_date = Column(DateTime(timezone=True), nullable=True)
 
     creator = relationship("User",back_populates="tasks",lazy = "selectin")
 
