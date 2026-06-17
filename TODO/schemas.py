@@ -10,6 +10,7 @@ class TaskBase(BaseModel):
     title: str = Field(..., max_length=255,min_length=1, examples=["Complete Maths assignment"])
     description: Optional[str] = Field(None, max_length=500, examples=["Finish Calculus portion before Monday"])
     is_important: Optional[bool] = False
+    
     due_date: Optional[datetime] = None
     @field_validator("due_date", mode="before")
     @classmethod

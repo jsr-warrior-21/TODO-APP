@@ -18,6 +18,7 @@ async def create(request:schemas.CreateTask,db:AsyncSession=Depends(database.get
         description = request.description,
         due_date=request.due_date,
         user_id = current_user.id
+        
     )
     db.add(new_task)
     await db.commit()
@@ -79,6 +80,7 @@ async def update(
   task.title = request.title
   task.description = request.description
   task.due_date = request.due_date
+  
 
   await db.commit()
   await db.refresh(task)
@@ -136,3 +138,28 @@ async def get_important_tasks(
     tasks = result.scalars().all()
 
     return tasks
+
+@router.patch("/{task_id}/complete")
+async def toggle_complete(
+    task_id: int,
+    db: AsyncSession = Depends(database.get_db),
+    current_user = Depends(oauth2.get_current_user)
+):
+    result = await db.execute(
+        select(models.Task).where(
+            models.Task.id == task_id,
+            models.Task.user_id == current_user.id
+        )
+    )
+
+    task = result.scalar_one_or_none()
+
+    if not task:
+        raise HTTPException(404, "Task not found")
+
+    task.completed = not task.completed
+
+    await db.commit()
+    await db.refresh(task)
+
+    return task
