@@ -57,5 +57,5 @@ export const deleteTask = (taskId) => api.delete(`/delete/${taskId}`);
 export const markImportant = (taskId) => api.patch(`/${taskId}/important`);
 export const getOverdueTasks = () => api.get('/overdue');
 export const getImportantTasks = () => api.get('/important');
-
+export const toggleComplete = (taskId) => api.patch(`/${taskId}/complete`);
 export default api;

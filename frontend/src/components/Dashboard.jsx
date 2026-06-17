@@ -8,6 +8,7 @@ import {
   markImportant,
   getOverdueTasks,
   getImportantTasks,
+  toggleComplete,
 } from "../services/api";
 import {
   LogOut,
@@ -356,15 +357,7 @@ const Dashboard = ({ onLogout, darkMode, setDarkMode }) => {
       );
       setTasks(updatedTasks);
 
-      const updateData = {
-        title: task.title,
-        description: task.description || null,
-        due_date: task.due_date || null,
-        is_important: task.is_important || false,
-        completed: !task.completed,
-      };
-
-      await updateTask(task.id, updateData);
+      await toggleComplete(task.id);
 
       const action = task.completed ? "marked as incomplete" : "completed";
       addActivity(action, task.title);
@@ -1210,7 +1203,6 @@ const Dashboard = ({ onLogout, darkMode, setDarkMode }) => {
               );
             })}
 
-            {/* Sort Dropdown - Fixed for Mobile */}
             <div className="relative">
               <button
                 onClick={() => setShowSortDropdown(!showSortDropdown)}
@@ -1227,8 +1219,7 @@ const Dashboard = ({ onLogout, darkMode, setDarkMode }) => {
                     className="fixed inset-0 z-40"
                     onClick={() => setShowSortDropdown(false)}
                   />
-                  {/* Center the dropdown on mobile */}
-                  <div className="absolute left-[120px] -translate-x-1/2 sm:left-auto sm:right-0 sm:translate-x-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 py-1 z-50">
+                  <div className="absolute left-[100px] -translate-x-1/2 sm:left-auto sm:right-0 sm:translate-x-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 py-1 z-50">
                     {[
                       "newest",
                       "oldest",
